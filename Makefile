@@ -15,12 +15,19 @@ ifeq ($(PREFIX),)
 	PREFIX := /usr/local
 endif
 
+SRCDIR	:= src
+INCDIR	:= include
+OBJDIR 	:= obj
+BINDIR	:= bin
+LIBDIR	:= lib
+
 HEADER := $(PROG).h
-TARGET  := lib$(PROG).a
-SOURCES := $(shell echo src/*.cpp)
-HEADERS := $(shell echo include/*.h)
+SOURCES := $(shell echo $(SRCDIR)/*.cpp)
+HEADERS := $(shell echo $(INCDIR)/*.h)
 COMMON  :=
-OBJECTS := $(SOURCES:.cpp=.o)
+OBJECTS := $(patsubst $(SRCDIR)/%,$(OBJDIR)/%,$(SOURCES:.cpp=.o))
+
+TARGET  := $(LIBDIR)/lib$(PROG).a
 
 all: $(TARGET)
 
@@ -29,7 +36,7 @@ $(TARGET): $(OBJECTS)
 	ranlib $@
 
 test:
-	cd test&& $(MAKE)
+	cd test && $(MAKE)
 
 release: $(SOURCES) $(HEADERS) $(COMMON)
 	$(CXX) $(FLAGS) $(CXXFLAGS) $(RELEASEFLAGS) -o $(TARGET) $(SOURCES)
@@ -47,7 +54,9 @@ clean:
 	-rm -f $(TARGET) $(OBJECTS) $(PROG).zip
 	-rm -f $(PREFIX)/lib/$(TARGET) $(PREFIX)/include/$(HEADER)
 
-%.o: %.c $(HEADERS) $(COMMON)
+remake: clean all
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(HEADERS) $(COMMON)
 	$(CXX) $(CXXFLAGS) $(DEBUGFLAGS) -c -o $@ $<
 
-.PHONY : all release install zip clean test
+.PHONY : all release install zip clean test remake
