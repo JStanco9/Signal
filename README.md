@@ -1,6 +1,6 @@
 # signal
 
-Template-based container interface that works very similarly to std::vector, with a good amount of added functionality for statistics and signal processing.
+Template-based container interface that works very similarly to std::vector, with added functionality for statistics and signal processing.
 
  - tsignal.h/cpp | The container itself, TSignal<T>, which behaves much like std::vector.
  - stats.h/cpp   | Interface for statistical analysis of TSignal<double> class.
