@@ -23,7 +23,6 @@
 
 #ifndef SIGNAL_H
 #define SIGNAL_H
-
 #ifndef SIGNAL_TSIGNAL_H
 #define SIGNAL_TSIGNAL_H
 
@@ -424,13 +423,6 @@ namespace Signal{
 
 	};
 
-}
-
-#endif /* SIGNAL_TSIGNAL_H */
-
-
-	///////////////// TEMPLATE IMPL //////////////////
-
 	void print( const TSignal<cx_double> & );
 	void print_real( const TSignal<cx_double> &, const char* );
 	void print_imag( const TSignal<cx_double> &, const char* );
@@ -445,6 +437,7 @@ namespace Signal{
 
 }
 
+#endif /* SIGNAL_TSIGNAL_H */
 #ifndef SIGNAL_STATS_H
 #define SIGNAL_STATS_H
 
@@ -466,7 +459,6 @@ namespace Signal {
 }
 
 #endif /* SIGNAL_STATS_H */
-
 #ifndef MYRAND_H
 #define MYRAND_H
 
@@ -536,7 +528,6 @@ namespace Signal {
 }
 
 #endif /* SIGNAL_FFT_H */
-
 #ifndef SIGNAL_FUNCTOR_H
 #define SIGNAL_FUNCTOR_H
 

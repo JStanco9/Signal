@@ -400,6 +400,18 @@ namespace Signal{
 
 	};
 
+  void print( const TSignal<cx_double> & );
+  void print_real( const TSignal<cx_double> &, const char* );
+  void print_imag( const TSignal<cx_double> &, const char* );
+  void print_real( const TSignal<cx_double> &, const std::string& );
+  void print_imag( const TSignal<cx_double> &, const std::string& );
+  void print( const TSignal<double> & );
+  void print( const TSignal<double> &, const char* );
+  void print( const TSignal<double> &, const std::string& );
+
+  typedef TSignal<cx_double> cx_signal;
+  typedef TSignal<double> signal;
+
 }
 
 #endif /* SIGNAL_TSIGNAL_H */
