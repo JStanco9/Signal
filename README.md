@@ -9,4 +9,4 @@ Template-based container interface that works very similarly to std::vector, wit
  
  - signal.h      | Contains all header files in one, providing all functionality when included.
 
-To make - make - make install ( installs library libsignal.a to /usr/local/lib and installs header signal.h to /usr/local/include )
+To make : make - make install ( installs library libsignal.a to /usr/local/lib and installs header signal.h to /usr/local/include )
