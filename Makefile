@@ -19,21 +19,23 @@ SRCDIR	:= src
 INCDIR	:= include
 OBJDIR 	:= obj
 BINDIR	:= bin
-LIBDIR	:= lib
+TARDIR	:= lib
 
-HEADER := $(PROG).h
 SOURCES := $(shell echo $(SRCDIR)/*.cpp)
 HEADERS := $(shell echo $(INCDIR)/*.h)
 COMMON  :=
 OBJECTS := $(patsubst $(SRCDIR)/%,$(OBJDIR)/%,$(SOURCES:.cpp=.o))
+HEADER 	:= $(PROG).h
+TARGET  := lib$(PROG).a
 
-TARGET  := $(LIBDIR)/lib$(PROG).a
+TAR_INSTALLDIR = $(PREFIX)/lib
+INC_INSTALLDIR = $(PREFIX)/include
 
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
-	ar ru $@ $^
-	ranlib $@
+	ar ru $(TARDIR)/$@ $^
+	ranlib $(TARDIR)/$@
 
 test:
 	cd test && $(MAKE)
@@ -42,17 +44,17 @@ release: $(SOURCES) $(HEADERS) $(COMMON)
 	$(CXX) $(FLAGS) $(CXXFLAGS) $(RELEASEFLAGS) -o $(TARGET) $(SOURCES)
 
 install: $(TARGET)
-	install -d $(PREFIX)/lib/
-	install -m 644 $(TARGET) $(PREFIX)/lib/
-	install -d $(PREFIX)/include/
-	install -m 644 include/$(HEADER) $(PREFIX)/include/
+	install -d $(TAR_INSTALLDIR)
+	install -m 644 $(TARDIR)/$(TARGET) $(TAR_INSTALLDIR)
+	install -d $(INC_INSTALLDIR)
+	install -m 644 $(INCDIR)/$(HEADER) $(INC_INSTALLDIR)
 
 zip:
 	-zip $(PROG).zip $(HEADERS) $(SOURCES) Makefile
 
 clean:
-	-rm -f $(TARGET) $(OBJECTS) $(PROG).zip
-	-rm -f $(PREFIX)/lib/$(TARGET) $(PREFIX)/include/$(HEADER)
+	-rm -f $(TARDIR)/$(TARGET) $(OBJECTS) $(PROG).zip
+	-rm -f $(TAR_INSTALLDIR)/$(TARGET) $(INC_INSTALLDIR)/$(HEADER)
 
 remake: clean all
 
