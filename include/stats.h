@@ -30,6 +30,8 @@ namespace Signal{
 	TSignal<double> deleted_averages( const TSignal<double> & );
 	double skewness( const TSignal<double> & );
 	double kurtosis( const TSignal<double> & );
+	void normalize_std_inpl( TSignal<double>& );
+	TSignal<double> normalize_std( const TSignal<double>& );
 }
 
 #endif /* SIGNAL_STATS_H */
