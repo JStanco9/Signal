@@ -1,6 +1,9 @@
-//created by John Stanco on 5/11/18
+// John Stanco 5.11.18
 
-//Basic Helper Functions for Metropolis Hastings Monte-Carlo;
+/**
+ * 		Implements methods for sampling normal and uniform distributions
+ **/
+ 
 
 #include "signal.h"
 #include <random>

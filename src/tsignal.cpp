@@ -8,15 +8,6 @@
 
 namespace Signal{
 
-	/*
-	void swap( TSignal<double>& a, TSignal<double>& b ) {
-		std::swap(a.dat, b.dat);
-		std::swap(a.len, b.len);
-		std::swap(a.cap, b.cap);
-	}
-	*/
-
-
 	TSignal<double>::TSignal() : dat{ new double[1]() }, len{ 0 }, cap{ 0 } {}
 
 
@@ -35,7 +26,7 @@ namespace Signal{
 	}
 
 
-	TSignal<double>& TSignal<double>::operator=( TSignal other ) { swap( *this, other ); return *this; }
+	TSignal<double>& TSignal<double>::operator=( TSignal rhs ) { swap( *this, rhs ); return *this; }
 
 
 	TSignal<double>::~TSignal() { delete[] dat; }
@@ -66,29 +57,43 @@ namespace Signal{
 	}
 
 
-	bool TSignal<double>::operator==( const TSignal<double> &other ) const {
-		if( len != other.len ) { return false; }
-		for( size_t i = 0; i < len; i++ ) {
-			if( dat[ i ] != other( i ) ) { return false; }
+	double& TSignal<double>::operator[]( const size_t index ) {
+		return this->operator()( index );
+	}
+
+
+	double TSignal<double>::operator[]( const size_t index ) const {
+		return this->operator()( index );
+	}
+
+
+	bool TSignal<double>::operator==( const TSignal<double> &rhs ) const {
+		if( len != rhs.len ) { return false; }
+		auto itl = begin();
+		auto itr = rhs.begin();
+		for( ; itl != end() && itr != rhs.end(); ++itl, ++itr ) {
+			if( *itl != *itr ) { return false; }
 		}
 		return true;
 	}
 
 
-	bool TSignal<double>::operator!=( const TSignal<double> &other ) const {
-		if( len != other.len ) { return true; }
-		for( size_t i = 0; i < len; i++ ) {
-			if( dat[ i ] != other( i ) ) { return true; }
+	bool TSignal<double>::operator!=( const TSignal<double> &rhs ) const {
+		if( len != rhs.len ) { return true; }
+		auto itl = begin();
+		auto itr = rhs.begin();
+		for( ; itl != end() && itr != rhs.end(); ++itl, ++itr ) {
+			if( *itl != *itr ) { return true; }
 		}
 		return false;
 	}
 
 
-	TSignal<double> TSignal<double>::operator*( const TSignal<double> &other ) const {
-		if( len != other.len ) { throw "TSignals must be of same size"; }
+	TSignal<double> TSignal<double>::operator*( const TSignal<double> &rhs ) const {
+		if( len != rhs.len ) { throw "TSignals must be of same size"; }
 		TSignal tmp{ len };
 		for( size_t i = 0; i < len; ++i ) {
-			tmp.dat[i] = dat[i]*other.dat[i];
+			tmp.dat[i] = dat[i]*rhs.dat[i];
 		}
 		return tmp;
 	}
@@ -183,13 +188,6 @@ namespace Signal{
 
 	/////////////////////// COMPLEX Signal ////////////////////////
 
-	/*
-	void swap( TSignal<cx_double>& a, TSignal<cx_double>& b ) {
-		std::swap(a.dat, b.dat);
-		std::swap(a.len, b.len);
-		std::swap(a.cap, b.cap);
-	}
-	*/
 
 	TSignal<cx_double>::TSignal() : dat{ new cx_double[1]() }, len{ 0 }, cap{ 0 } {}
 
@@ -210,8 +208,8 @@ namespace Signal{
 	}
 
 
-	TSignal<cx_double>& TSignal<cx_double>::operator=( TSignal other ) {
-		swap( *this, other );
+	TSignal<cx_double>& TSignal<cx_double>::operator=( TSignal rhs ) {
+		swap( *this, rhs );
 		return *this;
 	}
 
@@ -229,39 +227,53 @@ namespace Signal{
 
 
 	cx_double& TSignal<cx_double>::operator()( const size_t index ) {
-	 if(index>=len){ throw "Index out of bounds."; }
+	 if(index>=len){ throw TSignalOutOfRange(); }
 	 return dat[index];
 	}
 
 
 	cx_double TSignal<cx_double>::operator()( const size_t index ) const {
-	 if( index>=len ) { throw "Index out of bounds."; }
+	 if( index>=len ) { throw TSignalOutOfRange(); }
 	 return dat[index];
 	}
 
 
-	bool TSignal<cx_double>::operator==( const TSignal<cx_double> &other ) const {
-		if( len != other.len ) { return false; }
-		for( size_t i = 0; i < len; i++ ) {
-			if( dat[ i ] != other( i ) ) { return false; }
+	cx_double& TSignal<cx_double>::operator[]( const size_t index ) {
+		return this->operator()( index );
+	}
+
+
+	cx_double TSignal<cx_double>::operator[]( const size_t index ) const {
+		return this->operator()( index );
+	}
+
+
+	bool TSignal<cx_double>::operator==( const TSignal<cx_double> &rhs ) const {
+		if( len != rhs.len ) { return false; }
+		auto itl = begin();
+		auto itr = rhs.begin();
+		for( ; itl != end() && itr != rhs.end(); ++itl, ++itr ) {
+			if( *itl != *itr ) { return false; }
 		}
 		return true;
 	}
 
 
-	bool TSignal<cx_double>::operator!=( const TSignal<cx_double> &other ) const {
-		if( len != other.len ) { return true; }
-		for( size_t i = 0; i < len; i++ ) {
-			if( dat[i] != other( i ) ) { return true; }
+	bool TSignal<cx_double>::operator!=( const TSignal<cx_double> &rhs ) const {
+		if( len != rhs.len ) { return true; }
+		auto itl = begin();
+		auto itr = rhs.begin();
+		for( ; itl != end() && itr != rhs.end(); ++itl, ++itr ) {
+			if( *itl != *itr ) { return true; }
 		}
 		return false;
 	}
 
 
-	TSignal<cx_double> TSignal<cx_double>::operator*( const TSignal<cx_double> &other ) {
-		if( len != other.len ){ throw "TSignals must be of same size"; }
+	TSignal<cx_double> TSignal<cx_double>::operator*( const TSignal<cx_double> &rhs ) {
+		if( len != rhs.len ){ throw "TSignals must be of same size"; }
 		TSignal<cx_double> tmp( len );
-		for( size_t i = 0; i<len; ++i ) { tmp.dat[i] = dat[i]*other.dat[i]; }
+		for( size_t i = 0; i<len; ++i ) { tmp.dat[i] = dat[i]*rhs.dat[i]; }
 		return tmp;
 	}
 
@@ -346,44 +358,55 @@ namespace Signal{
 
 }
 
-void Signal::print(const Signal::TSignal<double> &f){
-	for( size_t i = 0; i < f.length(); ++i ){
-		std::cout << f( i ) << "\n";
+void Signal::print( const Signal::TSignal<double> &s ){
+	for( auto& x : s ) {
+		std::cout << x << "\n";
 	}
 }
 
 
-void Signal::print(const Signal::TSignal<double> &f, const char* filename){
-	FILE *pFile = fopen(filename, "w");
-	if(pFile){ for( size_t i = 0; i < f.length(); ++i ) {
-			fprintf(pFile,"%lf\n", f(i)); }
+void Signal::print( const Signal::TSignal<double> &s, const char* filename ) {
+	FILE *pFile = fopen( filename, "w" );
+	if( pFile ) {
+		for( auto& x : s ) {
+			fprintf( pFile, "%lf\n", x );
+		}
 	}
 }
 
-void Signal::print(const Signal::TSignal<double> &f, std::string const& filename){
+
+void Signal::print( const Signal::TSignal<double> &s, std::string const& filename ) {
 	FILE *pFile = fopen(filename.c_str(), "w");
-	if(pFile){ for(size_t i=0;i<f.length();i++){
-			fprintf(pFile,"%lf\n", f(i)); }
+	if( pFile ) {
+		for( auto& x : s ) {
+			fprintf( pFile, "%lf\n", x );
+		}
 	}
 }
 
 
-void Signal::print(const Signal::TSignal<cx_double> &f){
-	for(size_t i=0;i<f.length();i++){
-		std::cout << "re: " <<  f( i ).real() << "\t" << "im: " << f( i ).imag() << "\n";
+void Signal::print( const Signal::TSignal<cx_double> &s ) {
+	for( auto& z : s ) {
+		std::cout << "re: " <<  z.real() << "\t" << "im: " << z.imag() << "\n";
 	}
 }
 
-void Signal::print_real(const Signal::TSignal<cx_double> &f, const char* filename){
+
+void Signal::print_real( const Signal::TSignal<cx_double> &s, const char* filename ) {
 	FILE *pFile = fopen(filename, "w");
-	if(pFile){ for(size_t i=0;i<f.length();i++){
-			fprintf(pFile,"%lf\n", f(i).real()); }
+	if( pFile ) {
+		for( auto& z : s ) {
+			fprintf( pFile, "%lf\n", z.real() );
+		}
 	}
 }
 
-void Signal::print_imag(const Signal::TSignal<cx_double> &f, const char* filename){
+
+void Signal::print_imag( const Signal::TSignal<cx_double> &s, const char* filename ) {
 	FILE *pFile = fopen(filename, "w");
-	if(pFile){ for(size_t i=0;i<f.length();i++){
-			fprintf(pFile,"%lf\n", f(i).imag()); }
+	if( pFile ) {
+		for( auto& z : s ) {
+			fprintf( pFile, "%lf\n", z.imag() );
+		}
 	}
 }

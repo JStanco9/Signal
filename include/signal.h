@@ -1,20 +1,16 @@
 //Created by John Stanco on 2/5/18
 
 
-/*
-
- Interface for container class that wraps dynamically allocated C-style array.
- Contains member functions that pass underlying data array to FFTW3 functions
- for template specialized TSignal<double> and TSignal<cx_double> classes.
-
- These are found in fftw3.h file, which is generally installed to usr/bin/include on Unix systems
-
- Full template specialization can be found in signal.cpp file.
-
- */
-
-// 				Test fftw thoroughly
-//				Test functors
+/**		
+ * 		Interface for the class TSignal<T>:
+ * 		- provides storage time-series signals/random variables.
+ * 		- Supports computation of Fast Signal-Processing routines.
+ * 			FFT, IFFT, Cross-Corellation, Auto-Correlation, and Convolution
+ * 			through implementation of FFTW3 library for complex and real-valued signals.  
+ * 		- Supports Statistical Analysis of signals including 
+ * 			blocking, jackknife, and bootstrap analysis for real signals.
+ * 			includes calculation of statistical moments up to 4.
+ **/
 
 
 #include <complex>
@@ -61,6 +57,8 @@ namespace Signal{
 
 		T& operator()(const size_t index);
 		T operator()(const size_t index) const;
+		T& operator[](const size_t index);
+		T operator[](const size_t index) const;
 		bool operator==( const TSignal &rhs ) const;
 		bool operator!=( const TSignal &rhs ) const;
 
@@ -179,6 +177,18 @@ namespace Signal{
 	T TSignal<T>::operator()( const size_t index ) const {
 		if( index >= len ) { throw TSignalOutOfRange(); }
 		return dat[index];
+	}
+
+
+	template<class T>
+	T& TSignal<T>::operator[](const size_t index) {
+		return this->operator()( index );
+	}
+
+
+	template<class T>
+	T TSignal<T>::operator[](const size_t index) const {
+		return this->operator()( index );
 	}
 
 
@@ -325,6 +335,8 @@ namespace Signal{
 
 		double& operator()( const size_t index );
 		double operator()( const size_t index ) const;
+		double& operator[]( const size_t index );
+		double operator[]( const size_t index ) const;
 		bool operator==( const TSignal &other ) const;
 		bool operator!=( const TSignal &other ) const;
 		TSignal operator*( const TSignal &other ) const;
@@ -386,6 +398,8 @@ namespace Signal{
 
 		cx_double& operator()( const size_t index );
 		cx_double operator()( const size_t index ) const;
+		cx_double& operator[]( const size_t index );
+		cx_double operator[]( const size_t index ) const;
 		bool operator==( const TSignal &other ) const;
 		bool operator!=( const TSignal &other ) const;
 		TSignal operator*( const TSignal &other );
@@ -536,6 +550,7 @@ template<class U, class V>
 class UnaryFunctor {
 public:
   virtual V operator()( const U& ) = 0;
+  virtual ~UnaryFunctor() {}
 };
 
 
@@ -543,6 +558,7 @@ template<class U, class V>
 class BinaryFunctor {
 public:
   virtual V operator()( const U&, const U& ) = 0;
+  virtual ~BinaryFunctor() {}
 };
 
 

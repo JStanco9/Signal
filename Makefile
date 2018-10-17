@@ -24,6 +24,7 @@ TARDIR	:= lib
 SOURCES := $(shell echo $(SRCDIR)/*.cpp)
 HEADERS := $(shell echo $(INCDIR)/*.h)
 COMMON  :=
+LIBS	:= -lfftw3
 OBJECTS := $(patsubst $(SRCDIR)/%,$(OBJDIR)/%,$(SOURCES:.cpp=.o))
 HEADER 	:= $(PROG).h
 TARGET  := lib$(PROG).a
@@ -41,7 +42,7 @@ test:
 	cd test && $(MAKE)
 
 release: $(SOURCES) $(HEADERS) $(COMMON)
-	$(CXX) $(FLAGS) $(CXXFLAGS) $(RELEASEFLAGS) -o $(TARGET) $(SOURCES)
+	$(CXX) $(FLAGS) $(CXXFLAGS) $(RELEASEFLAGS) -o $(TARGET) $(SOURCES) $(LIBS)
 
 install: $(TARGET)
 	install -d $(TAR_INSTALLDIR)
@@ -58,7 +59,9 @@ clean:
 
 remake: clean all
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(HEADERS) $(COMMON)
-	$(CXX) $(CXXFLAGS) $(DEBUGFLAGS) -c -o $@ $<
+reinstall: clean install
 
-.PHONY : all release install zip clean test remake
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(HEADERS) $(COMMON)
+	$(CXX) $(CXXFLAGS) $(RELEASEFLAGS) -c -o $@ $<
+
+.PHONY : all release install zip clean test remake reinstall

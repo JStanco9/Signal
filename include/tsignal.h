@@ -1,5 +1,9 @@
 //John Stanco 9.18.18
 
+
+#include <complex>
+
+
 #ifndef SIGNAL_TSIGNAL_H
 #define SIGNAL_TSIGNAL_H
 
@@ -38,6 +42,8 @@ namespace Signal{
 
 		T& operator()(const size_t index);
 		T operator()(const size_t index) const;
+		T& operator[](const size_t index);
+		T operator[](const size_t index) const;
 		bool operator==( const TSignal &rhs ) const;
 		bool operator!=( const TSignal &rhs ) const;
 
@@ -156,6 +162,18 @@ namespace Signal{
 	T TSignal<T>::operator()( const size_t index ) const {
 		if( index >= len ) { throw TSignalOutOfRange(); }
 		return dat[index];
+	}
+
+
+	template<class T>
+	T& TSignal<T>::operator[](const size_t index) {
+		return this->operator()( index );
+	}
+
+
+	template<class T>
+	T TSignal<T>::operator[](const size_t index) const {
+		return this->operator()( index );
 	}
 
 
@@ -302,6 +320,8 @@ namespace Signal{
 
 		double& operator()( const size_t index );
 		double operator()( const size_t index ) const;
+		double& operator[]( const size_t index );
+		double operator[]( const size_t index ) const;
 		bool operator==( const TSignal &other ) const;
 		bool operator!=( const TSignal &other ) const;
 		TSignal operator*( const TSignal &other ) const;
@@ -363,6 +383,8 @@ namespace Signal{
 
 		cx_double& operator()( const size_t index );
 		cx_double operator()( const size_t index ) const;
+		cx_double& operator[]( const size_t index );
+		cx_double operator[]( const size_t index ) const;
 		bool operator==( const TSignal &other ) const;
 		bool operator!=( const TSignal &other ) const;
 		TSignal operator*( const TSignal &other );

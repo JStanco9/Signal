@@ -5,6 +5,11 @@
 
 #include </usr/local/include/fftw3.h>
 
+/**
+ * 		Implementation of Signal Processing/FFT interface for TSignal<double> and TSignal<cx_double>
+ * 		Makefile links with to installed FFTW3 library usr/local/lib/libfftw3.a
+ **/
+
 
 template<class T>
 Signal::TSignal<T>& Signal::FFT_base::shift( Signal::TSignal<T> &f ) {

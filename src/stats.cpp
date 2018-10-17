@@ -2,6 +2,11 @@
 
 #include "signal.h"
 
+#include <random>
+
+/**
+ * 		Implements statistical analysis interface for TSignal<double>
+ **/
 
 double Signal::mean( const Signal::TSignal<double>& x ) {
 	double mu = 0;
