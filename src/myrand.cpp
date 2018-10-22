@@ -123,12 +123,12 @@ double ziggurat() {
 }
 
 
-double min(const double x1, const double x2){
+double min(double x1, double x2){
 	return(x1 > x2)? x2 : x1;
 }
 
 
-double randDouble(const double fMin, const double fMax){
+double randDouble(double fMin, double fMax){
     double f = UNI;
     return fMin + f * (fMax - fMin);
 }
@@ -151,7 +151,7 @@ int randInt(const int a){
 }
 
 
-int flip(const double x){
+int flip(double x){
 	if(0 > x || x > 1){
 		throw "|  function: flip  |  file: myrand.cpp  |  error:  input value 'x' must be between 0 and 1  |";
 	}

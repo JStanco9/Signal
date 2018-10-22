@@ -16,8 +16,8 @@ class FFT_base {
 	FFT_base( const FFT_base& other ) = delete;
 	FFT_base& operator=( FFT_base other ) = delete;
 public:
-	template<class T>
-	Signal::TSignal<T>& shift( Signal::TSignal<T>& );
+	template<template<typename> class Container, typename T>
+	Container<T>& shift( Container<T>& );
 };
 
 
@@ -25,11 +25,16 @@ class FFT : public FFT_base {
 	FFT( const FFT &other ) = delete;
 	FFT& operator=( FFT other ) = delete;
 public:
-	static Signal::TSignal<cx_double> c2c( Signal::TSignal<cx_double> &f );
-	static Signal::TSignal<double> r2r( Signal::TSignal<double> &f );
-	static Signal::TSignal<cx_double> r2c( Signal::TSignal<double> &f );
-	static void in_place( Signal::TSignal<cx_double>& );
-	static void in_place( Signal::TSignal<double>& );
+	template<template<typename, typename> class Container, typename A>
+	static Container<cx_double, A> c2c( Container<cx_double, A> &f );
+	template<template<typename, typename> class Container, typename A>
+	static Container<double, A> r2r( Container<double, A> &f );
+	template<template<typename, typename> class Container, typename A>
+	static Container<cx_double, A> r2c( Container<double, A> &f );
+	template<template<typename, typename> class Container, typename A>
+	static void inPlace( Container<cx_double, A>& );
+	template<template<typename, typename> class Container, typename A>
+	static void inPlace( Container<double, A>& );
 };
 
 
@@ -37,33 +42,48 @@ class IFFT : public FFT_base {
 	IFFT( const IFFT &other ) = delete;
 	IFFT& operator=( IFFT other ) = delete;
 public:
-	static Signal::TSignal<cx_double> c2c( Signal::TSignal<cx_double> &f );
-	static Signal::TSignal<double> r2r( Signal::TSignal<double> &f );
-	static Signal::TSignal<double> c2r( Signal::TSignal<cx_double> &f );
-	static void in_place( Signal::TSignal<cx_double>& );
-	static void in_place( Signal::TSignal<double>& );
+	template<template<typename, typename> class Container, typename A>
+	static Container<cx_double, A> c2c( Container<cx_double, A> &f );
+	template<template<typename, typename> class Container, typename A>
+	static Container<double, A> r2r( Container<double, A> &f );
+	template<template<typename, typename> class Container, typename A>
+	static Container<double, A> c2r( Container<cx_double, A> &f );
+	template<template<typename, typename> class Container, typename A>
+	static void inPlace( Container<cx_double, A>& );
+	template<template<typename, typename> class Container, typename A>
+	static void inPlace( Container<double, A>& );
 };
 
 
-namespace Signal {
+template<template<typename, typename> class Container, typename A>
+Container<double, A> convolve( const Container<double, A> &l, const Container<double, A> &r );
+template<template<typename, typename> class Container, typename A>
+Container<double, A> crosscorr( const Container<double, A> &l, const Container<double, A> &r );
+template<template<typename, typename> class Container, typename A>
+Container<double, A> autocorr( const Container<double, A> &f );
+template<template<typename, typename> class Container, typename A>
+Container<double, A>& fftshift( Container<double, A>& f );
+template<template<typename, typename> class Container, typename A>
+Container<double, A> fft( const Container<double, A> &f );
+template<template<typename, typename> class Container, typename A>
+Container<double, A> ifft( const Container<double, A> &f );
+template<template<typename, typename> class Container, typename A>
+Container<cx_double, A> fft_r2c( const Container<double, A> &f );
+template<template<typename, typename> class Container, typename A>
+Container<double, A> ifft_c2r( const Container<cx_double, A> &f );
 
-	TSignal<double> convolve( const TSignal<double> &l, const TSignal<double> &r );
-	TSignal<double> crosscorr( const TSignal<double> &l, const TSignal<double> &r );
-	TSignal<double> autocorr( const TSignal<double> &f );
-	TSignal<double>& fftshift( TSignal<double>& f );
-	TSignal<double> fft( const TSignal<double> &f );
-	TSignal<double> ifft( const TSignal<double> &f );
-	TSignal<cx_double> fft_r2c( const TSignal<double> &f );
-	TSignal<double> ifft_c2r( const TSignal<cx_double> &f );
 
-
-	TSignal<cx_double> convolve( const TSignal<cx_double> &l, const TSignal<cx_double> &r );
-	TSignal<cx_double> crosscorr( const TSignal<cx_double> &l, const TSignal<cx_double> &r );
-	TSignal<cx_double> autocorr( const TSignal<cx_double> &f );
-	TSignal<cx_double>& fftshift( TSignal<cx_double>& f );
-	TSignal<cx_double> fft( const TSignal<cx_double> &f );
-	TSignal<cx_double> ifft( const TSignal<cx_double> &f );
-
-}
+template<template<typename, typename> class Container, typename A>
+Container<cx_double, A> convolve( const Container<cx_double, A> &l, const Container<cx_double, A> &r );
+template<template<typename, typename> class Container, typename A>
+Container<cx_double, A> crosscorr( const Container<cx_double, A> &l, const Container<cx_double, A> &r );
+template<template<typename, typename> class Container, typename A>
+Container<cx_double, A> autocorr( const Container<cx_double, A> &f );
+template<template<typename, typename> class Container, typename A>
+Container<cx_double, A>& fftshift( Container<cx_double, A>& f );
+template<template<typename, typename> class Container, typename A>
+Container<cx_double, A> fft( const Container<cx_double, A> &f );
+template<template<typename, typename> class Container, typename A>
+Container<cx_double, A> ifft( const Container<cx_double, A> &f );
 
 #endif /* SIGNAL_FFT_H */
