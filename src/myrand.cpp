@@ -3,7 +3,7 @@
 /**
  * 		Implements methods for sampling normal and uniform distributions
  **/
- 
+
 
 #include "signal.h"
 #include <random>

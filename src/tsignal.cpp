@@ -32,7 +32,7 @@ namespace Signal{
 	TSignal<double>::~TSignal() { delete[] dat; }
 
 
-	size_t TSignal<double>::length() const { return len; }
+	size_t TSignal<double>::size() const { return len; }
 
 
 	double* TSignal<double>::data() { return dat; }
@@ -217,7 +217,7 @@ namespace Signal{
 	TSignal<cx_double>::~TSignal() { delete[] dat; }
 
 
-	size_t TSignal<cx_double>::length() const { return len; }
+	size_t TSignal<cx_double>::size() const { return len; }
 
 
 	cx_double* TSignal<cx_double>::data() { return dat; }

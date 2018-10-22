@@ -1,13 +1,13 @@
 //Created by John Stanco on 2/5/18
 
 
-/**		
+/**
  * 		Interface for the class TSignal<T>:
  * 		- provides storage time-series signals/random variables.
  * 		- Supports computation of Fast Signal-Processing routines.
  * 			FFT, IFFT, Cross-Corellation, Auto-Correlation, and Convolution
- * 			through implementation of FFTW3 library for complex and real-valued signals.  
- * 		- Supports Statistical Analysis of signals including 
+ * 			through implementation of FFTW3 library for complex and real-valued signals.
+ * 		- Supports Statistical Analysis of signals including
  * 			blocking, jackknife, and bootstrap analysis for real signals.
  * 			includes calculation of statistical moments up to 4.
  **/
@@ -48,7 +48,7 @@ namespace Signal{
 		TSignal& operator=( TSignal rhs );
 		~TSignal();
 
-		size_t length() const;
+		size_t size() const;
 		/// accessing underlying array
 		T* data();
 		T* data() const;
@@ -139,7 +139,7 @@ namespace Signal{
 
 
 	template<class T>
-	size_t TSignal<T>::length() const { return len; }
+	size_t TSignal<T>::size() const { return len; }
 
 
 	template<class T>
@@ -329,7 +329,7 @@ namespace Signal{
 		TSignal& operator=( TSignal other );
 		~TSignal();
 
-		size_t length() const;
+		size_t size() const;
 		double* data();
 		double* data() const;
 
@@ -392,7 +392,7 @@ namespace Signal{
 		TSignal( const TSignal &other );
 		~TSignal();
 
-		size_t length() const;
+		size_t size() const;
 		cx_double* data();
 		cx_double* data() const;
 

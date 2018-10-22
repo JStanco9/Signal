@@ -13,8 +13,8 @@
 
 template<class T>
 Signal::TSignal<T>& Signal::FFT_base::shift( Signal::TSignal<T> &f ) {
-	auto left = f.length() / 2;
- 	auto right = f.length() - left;
+	auto left = f.size() / 2;
+ 	auto right = f.size() - left;
 	auto n_bytes = sizeof( T );
 
 	auto *tmp = ( T* )malloc( n_bytes*left );
@@ -26,10 +26,10 @@ Signal::TSignal<T>& Signal::FFT_base::shift( Signal::TSignal<T> &f ) {
 
 
 Signal::TSignal<cx_double> Signal::FFT::c2c( Signal::TSignal<cx_double> &f ) {
-	TSignal<cx_double> s{ f.length() };
-	auto arrsize = f.length()*sizeof( fftw_complex );
+	TSignal<cx_double> s{ f.size() };
+	auto arrsize = f.size()*sizeof( fftw_complex );
 	auto *in = ( fftw_complex* )fftw_malloc( arrsize );
-	auto p = fftw_plan_dft_1d( f.length(), in, in, FFTW_FORWARD, FFTW_ESTIMATE );
+	auto p = fftw_plan_dft_1d( f.size(), in, in, FFTW_FORWARD, FFTW_ESTIMATE );
 	memcpy( in, f.data(), arrsize );
 	fftw_execute( p );
 	memcpy( s.data(), in, arrsize );
@@ -39,10 +39,10 @@ Signal::TSignal<cx_double> Signal::FFT::c2c( Signal::TSignal<cx_double> &f ) {
 
 
 Signal::TSignal<double> Signal::FFT::r2r( Signal::TSignal<double> &f ) {
-	TSignal<double> s{ f.length() };
-	auto arrsize = f.length()*sizeof( double );
+	TSignal<double> s{ f.size() };
+	auto arrsize = f.size()*sizeof( double );
 	auto *in = ( double* )fftw_malloc( arrsize );
-	auto p = fftw_plan_r2r_1d( f.length() , in, in, FFTW_REDFT10, FFTW_ESTIMATE );
+	auto p = fftw_plan_r2r_1d( f.size() , in, in, FFTW_REDFT10, FFTW_ESTIMATE );
 	memcpy( in, f.data(), arrsize );
 	fftw_execute( p );
 	memcpy( s.data(), in, arrsize );
@@ -52,9 +52,9 @@ Signal::TSignal<double> Signal::FFT::r2r( Signal::TSignal<double> &f ) {
 
 
 void Signal::FFT::inPlace( Signal::TSignal<double> &f ) {
-	auto arrsize = f.length()*sizeof( double );
+	auto arrsize = f.size()*sizeof( double );
 	auto *in = ( double* )fftw_malloc( arrsize );
-	auto p = fftw_plan_r2r_1d( f.length(), in, in, FFTW_REDFT10, FFTW_ESTIMATE );
+	auto p = fftw_plan_r2r_1d( f.size(), in, in, FFTW_REDFT10, FFTW_ESTIMATE );
 	memcpy( in, f.data(), arrsize );
 	fftw_execute( p );
 	memcpy( f.data(), in, arrsize );
@@ -63,9 +63,9 @@ void Signal::FFT::inPlace( Signal::TSignal<double> &f ) {
 
 
 void Signal::FFT::inPlace( Signal::TSignal<cx_double> &f ) {
-	auto arrsize = f.length()*sizeof( fftw_complex );
+	auto arrsize = f.size()*sizeof( fftw_complex );
 	auto *in = ( fftw_complex* )fftw_malloc( arrsize );
-	auto p = fftw_plan_dft_1d( f.length(), in, in, FFTW_FORWARD, FFTW_ESTIMATE );
+	auto p = fftw_plan_dft_1d( f.size(), in, in, FFTW_FORWARD, FFTW_ESTIMATE );
 	memcpy( in, f.data(), arrsize );
 	fftw_execute( p );
 	memcpy( f.data(), in, arrsize );
@@ -74,21 +74,21 @@ void Signal::FFT::inPlace( Signal::TSignal<cx_double> &f ) {
 
 
 Signal::TSignal<cx_double> Signal::FFT::r2c( Signal::TSignal<double> &f ) {
-	Signal::TSignal<cx_double> s{ f.length() };
-	auto in_arrsize = f.length()*sizeof( double );
-	auto out_arrsize = ( f.length()/2+1 )*sizeof( fftw_complex );
+	Signal::TSignal<cx_double> s{ f.size() };
+	auto in_arrsize = f.size()*sizeof( double );
+	auto out_arrsize = ( f.size()/2+1 )*sizeof( fftw_complex );
 	auto *in = ( double* )fftw_malloc( in_arrsize );
 	auto *out = ( fftw_complex* )fftw_malloc( out_arrsize );
-	auto *rslt = ( fftw_complex* )fftw_malloc( f.length()*sizeof( fftw_complex ) );
-	auto p = fftw_plan_dft_r2c_1d( f.length(), in, out, FFTW_ESTIMATE );
+	auto *rslt = ( fftw_complex* )fftw_malloc( f.size()*sizeof( fftw_complex ) );
+	auto p = fftw_plan_dft_r2c_1d( f.size(), in, out, FFTW_ESTIMATE );
 
 	memcpy( in, f.data(), in_arrsize );
 	fftw_execute(p);
 	/// FFTW only computes 1st half, use hermiticity for 2nd half | TODO: CHECK
 	memcpy( s.data(), out, out_arrsize );
 
-	for( size_t i = f.length()/2+1; i < f.length(); ++i ) {
-		s( s.length() - i ) = conj( s( i ) );
+	for( size_t i = f.size()/2+1; i < f.size(); ++i ) {
+		s( s.size() - i ) = conj( s( i ) );
 	}
 
 	fftw_destroy_plan(p);
@@ -100,10 +100,10 @@ Signal::TSignal<cx_double> Signal::FFT::r2c( Signal::TSignal<double> &f ) {
 
 
 Signal::TSignal<cx_double> Signal::IFFT::c2c( Signal::TSignal<cx_double> &f ) {
-	Signal::TSignal<cx_double> s{ f.length() };
-	auto arrsize = f.length()*sizeof( fftw_complex );
+	Signal::TSignal<cx_double> s{ f.size() };
+	auto arrsize = f.size()*sizeof( fftw_complex );
 	auto *in = ( fftw_complex* )fftw_malloc( arrsize );
-	auto p = fftw_plan_dft_1d( f.length(), in, in, FFTW_BACKWARD, FFTW_ESTIMATE );
+	auto p = fftw_plan_dft_1d( f.size(), in, in, FFTW_BACKWARD, FFTW_ESTIMATE );
 
 	memcpy( in, f.data(), arrsize );
 	fftw_execute( p );
@@ -114,10 +114,10 @@ Signal::TSignal<cx_double> Signal::IFFT::c2c( Signal::TSignal<cx_double> &f ) {
 
 
 Signal::TSignal<double> Signal::IFFT::r2r( Signal::TSignal<double> &f ) {
-	Signal::TSignal<double> s{ f.length() };
-	auto arrsize = f.length()*sizeof( double );
+	Signal::TSignal<double> s{ f.size() };
+	auto arrsize = f.size()*sizeof( double );
 	auto *in = ( double* )fftw_malloc( arrsize );
-	auto p = fftw_plan_r2r_1d( f.length() , in, in, FFTW_REDFT10, FFTW_ESTIMATE );
+	auto p = fftw_plan_r2r_1d( f.size() , in, in, FFTW_REDFT10, FFTW_ESTIMATE );
 
 	memcpy( in, f.data(), arrsize );
 	fftw_execute( p );
@@ -128,12 +128,12 @@ Signal::TSignal<double> Signal::IFFT::r2r( Signal::TSignal<double> &f ) {
 
 
 Signal::TSignal<double> Signal::IFFT::c2r( Signal::TSignal<cx_double> &f ) {
-	Signal::TSignal<double> s{ f.length() };
-	auto in_arrsize = ( f.length()/2+1 )*sizeof( fftw_complex );
-	auto out_arrsize = f.length()*sizeof( double );
+	Signal::TSignal<double> s{ f.size() };
+	auto in_arrsize = ( f.size()/2+1 )*sizeof( fftw_complex );
+	auto out_arrsize = f.size()*sizeof( double );
 	auto *in = ( fftw_complex* )fftw_malloc( in_arrsize );
 	auto *out = ( double* )fftw_malloc( out_arrsize );
-	auto p = fftw_plan_dft_c2r_1d( f.length(), in, out, FFTW_ESTIMATE );
+	auto p = fftw_plan_dft_c2r_1d( f.size(), in, out, FFTW_ESTIMATE );
 
 	memcpy( in, f.data(), in_arrsize );
 	fftw_execute(p);
@@ -147,9 +147,9 @@ Signal::TSignal<double> Signal::IFFT::c2r( Signal::TSignal<cx_double> &f ) {
 
 
 void Signal::IFFT::inPlace( Signal::TSignal<double> &f ) {
-	auto arrsize = f.length()*sizeof( double );
+	auto arrsize = f.size()*sizeof( double );
 	auto *in = ( double* )fftw_malloc( arrsize );
-	auto p = fftw_plan_r2r_1d( f.length(), in, in, FFTW_REDFT10, FFTW_ESTIMATE );
+	auto p = fftw_plan_r2r_1d( f.size(), in, in, FFTW_REDFT10, FFTW_ESTIMATE );
 	memcpy( in, f.data(), arrsize );
 	fftw_execute( p );
 	memcpy( f.data(), in, arrsize );
@@ -158,9 +158,9 @@ void Signal::IFFT::inPlace( Signal::TSignal<double> &f ) {
 
 
 void Signal::IFFT::inPlace( Signal::TSignal<cx_double> &f ) {
-	auto arrsize = f.length()*sizeof( fftw_complex );
+	auto arrsize = f.size()*sizeof( fftw_complex );
   auto *in = ( fftw_complex* )fftw_malloc( arrsize );
-	auto p = fftw_plan_dft_1d( f.length(), in, in, FFTW_BACKWARD, FFTW_ESTIMATE );
+	auto p = fftw_plan_dft_1d( f.size(), in, in, FFTW_BACKWARD, FFTW_ESTIMATE );
 	memcpy( in, f.data(), arrsize );
 	fftw_execute( p );
 	memcpy( f.data(), in, arrsize );
@@ -203,10 +203,10 @@ void conj_arr( fftw_complex *f, const size_t len ) {
 
 /// DCT-II - input data must be real and symmetric
 Signal::TSignal<double> Signal::fft( const Signal::TSignal<double> &f ){
-	Signal::TSignal<double> s{ f.length() };
-	auto arrsize = f.length()*sizeof( double );
+	Signal::TSignal<double> s{ f.size() };
+	auto arrsize = f.size()*sizeof( double );
 	auto *in = ( double* )fftw_malloc( arrsize );
-	auto p = fftw_plan_r2r_1d( f.length(), in, in, FFTW_REDFT10, FFTW_ESTIMATE );
+	auto p = fftw_plan_r2r_1d( f.size(), in, in, FFTW_REDFT10, FFTW_ESTIMATE );
 	memcpy( in, f.data(), arrsize );
 	fftw_execute(p);
 	memcpy( s.data(), in, arrsize );
@@ -217,10 +217,10 @@ Signal::TSignal<double> Signal::fft( const Signal::TSignal<double> &f ){
 
 
 Signal::TSignal<double> Signal::ifft( const Signal::TSignal<double> &f ) {
-	Signal::TSignal<double> s{ f.length() };
-	auto arrsize = f.length()*sizeof( double );
+	Signal::TSignal<double> s{ f.size() };
+	auto arrsize = f.size()*sizeof( double );
 	auto *in = ( double* )fftw_malloc( arrsize );
-	auto p = fftw_plan_r2r_1d( f.length(), in, in, FFTW_REDFT01, FFTW_ESTIMATE );
+	auto p = fftw_plan_r2r_1d( f.size(), in, in, FFTW_REDFT01, FFTW_ESTIMATE );
 	memcpy( in, f.data(), arrsize );
 	fftw_execute(p);
 	memcpy( s.data(), in, arrsize );
@@ -232,20 +232,20 @@ Signal::TSignal<double> Signal::ifft( const Signal::TSignal<double> &f ) {
 
 /// IDCT-II - input data must be real and symmetric
 Signal::TSignal<cx_double> Signal::fft_r2c( const Signal::TSignal<double> &f ) {
-	Signal::TSignal<cx_double> s{ f.length() };
-	auto in_arrsize = f.length()*sizeof( double );
-	auto out_arrsize = (f.length()/2+1)*sizeof( fftw_complex );
+	Signal::TSignal<cx_double> s{ f.size() };
+	auto in_arrsize = f.size()*sizeof( double );
+	auto out_arrsize = (f.size()/2+1)*sizeof( fftw_complex );
 	auto *in = ( double* )fftw_malloc(in_arrsize);
 	auto *out = ( fftw_complex* )fftw_malloc( out_arrsize );
-	auto *rslt = ( fftw_complex* )fftw_malloc( f.length()*sizeof( fftw_complex ) );
-	auto p = fftw_plan_dft_r2c_1d( f.length(), in, out, FFTW_ESTIMATE );
+	auto *rslt = ( fftw_complex* )fftw_malloc( f.size()*sizeof( fftw_complex ) );
+	auto p = fftw_plan_dft_r2c_1d( f.size(), in, out, FFTW_ESTIMATE );
 
 	memcpy( in, f.data(), in_arrsize );
 	fftw_execute(p);
 	memcpy( s.data(), out, out_arrsize );
 
-	for( size_t i = f.length() / 2 + 1; i < f.length(); ++i ) {
-		s( s.length() - i ) = conj( s( i ) );
+	for( size_t i = f.size() / 2 + 1; i < f.size(); ++i ) {
+		s( s.size() - i ) = conj( s( i ) );
 	}
 
 	fftw_destroy_plan( p );
@@ -257,12 +257,12 @@ Signal::TSignal<cx_double> Signal::fft_r2c( const Signal::TSignal<double> &f ) {
 
 
 Signal::TSignal<double> Signal::ifft_c2r( const Signal::TSignal<cx_double> &f ) {
-	Signal::TSignal<double> s{ f.length() };
-	auto in_arrsize = ( f.length() / 2 + 1 )*sizeof( fftw_complex );
-	auto out_arrsize = f.length()*sizeof( double );
+	Signal::TSignal<double> s{ f.size() };
+	auto in_arrsize = ( f.size() / 2 + 1 )*sizeof( fftw_complex );
+	auto out_arrsize = f.size()*sizeof( double );
 	auto *in = ( fftw_complex* )fftw_malloc( in_arrsize );
 	auto *out = ( double* )fftw_malloc( out_arrsize );
-	auto p = fftw_plan_dft_c2r_1d( f.length(), in, out, FFTW_ESTIMATE );
+	auto p = fftw_plan_dft_c2r_1d( f.size(), in, out, FFTW_ESTIMATE );
 
 	memcpy( in, f.data(), in_arrsize );
 	fftw_execute( p );
@@ -275,9 +275,9 @@ Signal::TSignal<double> Signal::ifft_c2r( const Signal::TSignal<cx_double> &f ) 
 
 
 Signal::TSignal<double> Signal::convolve( const Signal::TSignal<double> &l, const Signal::TSignal<double> &r ) {
-	if( l.length() != r.length() ) { throw "Signals must be of same length"; }
+	if( l.size() != r.size() ) { throw "Signals must be of same size"; }
 
-	auto n = l.length();
+	auto n = l.size();
 	auto N = n / 2 + 1;
 	auto in_arrsize = n*sizeof( double );
 	auto out_arrsize = N*sizeof( fftw_complex );
@@ -322,10 +322,10 @@ Signal::TSignal<double> Signal::autocorr( const Signal::TSignal<double> &f ){
 
 
 Signal::TSignal<cx_double> Signal::fft( const TSignal<cx_double> &f ) {
-	Signal::TSignal<cx_double> s{ f.length() };
-	auto arrsize = sizeof( fftw_complex )*f.length();
+	Signal::TSignal<cx_double> s{ f.size() };
+	auto arrsize = sizeof( fftw_complex )*f.size();
 	auto *in = ( fftw_complex* )fftw_malloc( arrsize );
-	auto p = fftw_plan_dft_1d( f.length(), in, in, FFTW_FORWARD, FFTW_ESTIMATE );
+	auto p = fftw_plan_dft_1d( f.size(), in, in, FFTW_FORWARD, FFTW_ESTIMATE );
 	memcpy( in, f.data(), arrsize );
 	fftw_execute( p );
 	memcpy( s.data(), in, arrsize );
@@ -336,10 +336,10 @@ Signal::TSignal<cx_double> Signal::fft( const TSignal<cx_double> &f ) {
 
 
 Signal::TSignal<cx_double> Signal::ifft( const TSignal<cx_double> &f ) {
-	Signal::TSignal<cx_double> s{ f.length() };
-	auto arrsize = f.length()*sizeof( fftw_complex );
+	Signal::TSignal<cx_double> s{ f.size() };
+	auto arrsize = f.size()*sizeof( fftw_complex );
 	auto *in = ( fftw_complex* )fftw_malloc( arrsize );
-	auto p = fftw_plan_dft_1d( f.length(), in, in, FFTW_BACKWARD, FFTW_ESTIMATE );
+	auto p = fftw_plan_dft_1d( f.size(), in, in, FFTW_BACKWARD, FFTW_ESTIMATE );
 	memcpy( in, f.data(), arrsize );
 	fftw_execute( p );
 	memcpy( s.data(), in, arrsize );
@@ -350,9 +350,9 @@ Signal::TSignal<cx_double> Signal::ifft( const TSignal<cx_double> &f ) {
 
 
 Signal::TSignal<cx_double> Signal::convolve( const TSignal<cx_double> &l, const TSignal<cx_double> &r ) {
-  if( l.length() != r.length() ) { throw "Signals must be of same length"; }
+  if( l.size() != r.size() ) { throw "Signals must be of same size"; }
 
-	auto N = l.length();
+	auto N = l.size();
 	auto arrsize = N*sizeof( fftw_complex );
 	Signal::TSignal<cx_double> s{ N };
 
@@ -383,9 +383,9 @@ Signal::TSignal<cx_double> Signal::convolve( const TSignal<cx_double> &l, const 
 
 
 Signal::TSignal<cx_double> Signal::crosscorr( const Signal::TSignal<cx_double> &l, const Signal::TSignal<cx_double> &r ) {
-  if( l.length() != r.length() ) { throw "Signals must be of same length"; }
+  if( l.size() != r.size() ) { throw "Signals must be of same size"; }
 
-	auto N = l.length();
+	auto N = l.size();
 	auto arrsize = N*sizeof( fftw_complex );
 	Signal::TSignal<cx_double> s{ N };
 
@@ -423,8 +423,8 @@ Signal::TSignal<cx_double> Signal::autocorr( const Signal::TSignal<cx_double> &f
 
 template<class T>
 Signal::TSignal<T>& Signal::fftshift( Signal::TSignal<T>& f ) {
-	size_t left = f.length() / 2;
-	size_t right = f.length() - left;
+	size_t left = f.size() / 2;
+	size_t right = f.size() - left;
 	size_t n_bytes = sizeof( T );
 
 	T *tmp = ( T* )malloc( n_bytes*left );

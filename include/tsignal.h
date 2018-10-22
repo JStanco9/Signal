@@ -33,7 +33,7 @@ namespace Signal{
 		TSignal& operator=( TSignal rhs );
 		~TSignal();
 
-		size_t length() const;
+		size_t size() const;
 		/// accessing underlying array
 		T* data();
 		T* data() const;
@@ -124,7 +124,7 @@ namespace Signal{
 
 
 	template<class T>
-	size_t TSignal<T>::length() const { return len; }
+	size_t TSignal<T>::size() const { return len; }
 
 
 	template<class T>
@@ -314,7 +314,7 @@ namespace Signal{
 		TSignal& operator=( TSignal other );
 		~TSignal();
 
-		size_t length() const;
+		size_t size() const;
 		double* data();
 		double* data() const;
 
@@ -377,7 +377,7 @@ namespace Signal{
 		TSignal( const TSignal &other );
 		~TSignal();
 
-		size_t length() const;
+		size_t size() const;
 		cx_double* data();
 		cx_double* data() const;
 
