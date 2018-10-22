@@ -340,11 +340,22 @@ void print( const Container<V, A> &s, Stream& os ){
 
 
 template<template<class, class> class Container, class A, class Stream>
-void print( const Container<cx_double, A> &s, Stream& os ) {
-	for( auto& z : s ) {
-		os << std::left << std::setw(24) << std::setprecision(16) << z.real() << std::left << z.imag() << "\n";
+void print( const Container<double, A> &s, Stream& os, size_t precision = 16 ) {
+	for( auto& x : s ) {
+		os << std::setprecision(precision) << x << "\n";
 	}
 }
+
+
+template<template<class, class> class Container, class A, class Stream>
+void print( const Container<cx_double, A> &s, Stream& os, size_t precision = 16 ) {
+	for( auto& z : s ) {
+		os << std::left << std::setw(24) << std::setprecision(precision) << z.real() << std::left << z.imag() << "\n";
+	}
+}
+
+
+
 
 
 template<template<class, class> class Container, class V, class A>
@@ -356,43 +367,51 @@ void print( const Container<V, A> &s, std::basic_ostream<char> &os = std::cout )
 
 
 template<template<class, class> class Container, class A>
-void print( const Container<cx_double, A> &s, std::basic_ostream<char> &os = std::cout ) {
+void print( const Container<cx_double, A> &s, std::basic_ostream<char> &os = std::cout, size_t precision = 16 ) {
 	for( auto& z : s ) {
-		os << std::left << std::setw(24) << std::setprecision(16) << z.real() << std::left << z.imag() << "\n";
-	}
-}
-
-
-template<template<class, class> class Container, class A, class Stream>
-void printReal( const Container<cx_double, A> &s, Stream &os ) {
-	if( !os.is_open() ) { throw "Attempted to print to unopen file stream"; }
-	for( auto& z : s ) {
-		os << std::left << std::setprecision(16) << z.real() << "\n";
+		os << std::left << std::setw(24) << std::setprecision(precision) << z.real() << std::left << z.imag() << "\n";
 	}
 }
 
 
 template<template<class, class> class Container, class A>
-void printReal( const Container<cx_double, A> &s, std::basic_ostream<char> &os = std::cout ) {
-	for( auto& z : s ) {
-		os << std::left << std::setprecision(16) << z.real() << "\n";
+void print( const Container<double, A> &s, std::basic_ostream<char> &os = std::cout, size_t precision = 16 ) {
+	for( auto& x : s ) {
+		os << std::setprecision(precision) << x << "\n";
 	}
 }
 
 
 template<template<class, class> class Container, class A, class Stream>
-void printImag( const Container<cx_double, A> &s, Stream &os ) {
+void printReal( const Container<cx_double, A> &s, Stream &os, size_t precision = 16 ) {
 	if( !os.is_open() ) { throw "Attempted to print to unopen file stream"; }
 	for( auto& z : s ) {
-		os << std::left << std::setprecision(16) << z.imag() << "\n";
+		os << std::left << std::setprecision(precision) << z.real() << "\n";
 	}
 }
 
 
 template<template<class, class> class Container, class A>
-void printImag( const Container<cx_double, A> &s, std::basic_ostream<char> &os = std::cout ) {
+void printReal( const Container<cx_double, A> &s, std::basic_ostream<char> &os = std::cout, size_t precision = 16 ) {
 	for( auto& z : s ) {
-		os << std::left << std::setprecision(16) << z.imag() << "\n";
+		os << std::left << std::setprecision(precision) << z.real() << "\n";
+	}
+}
+
+
+template<template<class, class> class Container, class A, class Stream>
+void printImag( const Container<cx_double, A> &s, Stream &os, size_t precision = 16 ) {
+	if( !os.is_open() ) { throw "Attempted to print to unopen file stream"; }
+	for( auto& z : s ) {
+		os << std::left << std::setprecision(precision) << z.imag() << "\n";
+	}
+}
+
+
+template<template<class, class> class Container, class A>
+void printImag( const Container<cx_double, A> &s, std::basic_ostream<char> &os = std::cout, size_t precision = 16 ) {
+	for( auto& z : s ) {
+		os << std::left << std::setprecision(precision) << z.imag() << "\n";
 	}
 }
 
