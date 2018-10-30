@@ -5,7 +5,7 @@
  **/
 
 
-#include "signal.h"
+#include "tsignal.h"
 #include <random>
 
 double pi = std::acos(-1);

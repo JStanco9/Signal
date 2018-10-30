@@ -1,4 +1,4 @@
-PROG := signal
+PROG := tsignal
 SHELL := /bin/sh
 CC := gcc
 CXX := g++

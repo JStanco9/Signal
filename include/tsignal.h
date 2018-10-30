@@ -116,20 +116,20 @@ namespace Signal{
 
 	/*
 	template<class T, class A>
-	TSignal<T, A>::TSignal() : alloc{ A{} }, len{ 0 }, cap{ 0 } {
+	TSignal<T, A>::TSignal() : len{ 0 }, cap{ 0 }, alloc{ A{} } {
 		dat = alloc.allocate( 1 );
 	}
 	*/
 
 	template<class T, class A>
-	TSignal<T, A>::TSignal( const size_t n ) : alloc{ A{} }, len{ n }, cap{ n } {
+	TSignal<T, A>::TSignal( const size_t n ) : len{ n }, cap{ n }, alloc{ A{} } {
 		dat = alloc.allocate( n + 1 );
 	}
 
 
 	template<class T, class A>
 	TSignal<T, A>::TSignal( const TSignal<T, A>& other ) :
-	alloc{ other.alloc }, len{ other.len }, cap{ other.cap } {
+	len{ other.len }, cap{ other.cap }, alloc{ other.alloc } {
 		dat = alloc.allocate( other.cap + 1 );
 		memcpy( dat, other.dat, (cap + 1) * sizeof( T ));
 	}
