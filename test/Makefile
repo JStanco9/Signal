@@ -1,4 +1,4 @@
-PROG := signal
+PROG := tsignal
 SHELL := /bin/sh
 CC := gcc
 CXX := g++
@@ -17,7 +17,7 @@ endif
 
 TARGET  := test-$(PROG).x
 SOURCES := test_$(PROG).cpp
-LIBS 		:= $(PREFIX)/lib/lib$(PROG).a
+LIBS 	:= -l$(PROG) -lfftw3 -lunittest
 HEADERS := $(PREFIX)/include/$(PROG).h
 COMMON	:=
 OBJECTS := $(SOURCES:.cpp=.o)
@@ -27,11 +27,11 @@ all: $(TARGET)
 $(TARGET): $(OBJECTS)
 	$(CXX) $(FLAGS) $(CXXFLAGS) $(DEBUGFLAGS) -o $(TARGET) $(OBJECTS) $(LIBS)
 
-clean: 
+clean:
 	-rm -f $(TARGET)
+	-rm -f $(OBJECTS)
 
 %.o: %.c $(HEADERS) $(COMMON)
 	$(CXX) $(CXXFLAGS) $(DEBUGFLAGS) -c -o $@ $<
 
 .PHONY: all clean
-

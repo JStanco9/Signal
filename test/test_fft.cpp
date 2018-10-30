@@ -169,8 +169,8 @@ void test_fft() {
 
 	size_t N = 1 << 6;
 	Signal::TSignal<cx_double> f{ N };
-
 	
+
 
 }
 
